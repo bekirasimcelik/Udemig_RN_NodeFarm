@@ -1,0 +1,76 @@
+//*Http modülü çağrıldı
+const http = require("http");
+const fs = require("fs");
+const url = require("url");
+const replaceTemplate = require("./modules/replaceTemplates.js");
+
+//* API
+//* Gelen istekleri izler ve Cevap Gönderir
+
+//Nodejs ile api oluşturulur
+
+//* CreateServer methoduna verdiğimiz dinleyici fonk her api isteiği aldığında tetiklenir.
+//* Bu fonk 2 parametre alır. 1) request (istek ile alakalı veriler burada yer alır) 2) response (gönderilecek veriler burada yer alır)
+
+//* Bu fonk içerisinde her gelen isteği dinleyip 1 cevap göndereceğiz.
+
+/**
+ ** ROUTING
+ * API'ye gelen her isteğin hangi endpoint (uç nokta) 'e geldiğini tespit edip ona göre
+ * cevap gönderme işlemine routing denir. Routing için client'ın hangi yola ve hangi
+ * http methodu ile istek attığını bilmemiz gerekiyor.
+ *
+ */
+
+ /* Anasayfa için html dosyanın içeriğini oku */
+ const tempOverView = fs.readFileSync("./templates/overviews.html", "utf-8");
+
+ // detay sayfası için html dosyasını oku
+const tempProduct = fs.readFileSync("./templates/product.html");
+
+// Card htmlini okuma kısmı json formatında alır
+fs.readFileSync("./templates/card.html", "utf-8");
+
+// Ürün verilerini okuma kısmı
+const data = fs.readFileSync("./dev-data/data.json", "utf-8")
+
+// json formatındaki veriyi js formatına çevir
+const dataObject = JSON.parse(data);
+
+const server = http.createServer((req, res) => {
+  // url'i parçalara ayırır
+  // product?id=1 gibi bir ifadeyi /product {id:1} olarak parçaladı.
+  const {pathname, query} = url.parse(req.url, true);
+
+  // if (request.url === "/") {
+  //     return response.end ("<h1>Su an Anasayfadasiniz</h1>")
+  // } else if (request.url == "/detay") {
+  //     return response.end("<h1>Su an detay sayfasindasiniz</h1>")
+  // }
+
+  // response.end("<h1>Sayfa bulunamadi </h1>")
+
+  switch (request.url) {
+    case "/overview":
+
+    //meyveler dizisini dön datadaki meyve kadar cart oluştur
+    const cards = dataObject.map((el) => replaceTemplate(tempCard, el));
+    
+    tempOverView = tempOverView.replace("{%PRODUCT_CARDS%}", cards);
+    
+    return response.end(tempOverView);
+
+    case "/product":
+      // todo 
+        return response.end(tempProduct);
+
+    default:
+        return response.end("<h1>SAYFA Bulunamadi</h1>")
+  }
+});
+
+//* Bundan sonra bir dinleyici oluşturup hangi adrese gelen istekleri dinleyeceğimizi söylemeliyiz.
+
+server.listen(4000, "127.0.0.1", () => {
+  console.log("Server 4000. porttan gelen istekleri dinlemeye başladı.");
+});
