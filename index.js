@@ -37,8 +37,13 @@ const server = http.createServer((req, res) => {
         return res.end(tempOverview);
 
         case "/product":
-            // Diziden urldeki parametreyle gelen id li elemanı bulma
-        return res.end(tempProduct);
+        // Diziden urldeki parametreyle gelen id li elemanı bulma
+        const product = dataObj[query.id];
+
+        const output = replaceTemplate(tempProduct, product);
+
+        // Detay sayfasının html'inü ürünün bilgilerine göre düzenlemeliyiz. Ardından client'a göndereceğiz.
+        return res.end(output);
         
         case "/card":
         return res.end(tempCard);
